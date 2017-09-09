@@ -771,59 +771,57 @@ end
 -- Flightmodes Drawing for copter todo for plane,Folow
 -- ###############################################################
 
-local FlightModeName = {}
+    local FourDigitFlightMode = math.floor((data.flightmodeNr % 10000) / 1000)
+    local ThreeDigitFlightMode = math.floor((data.flightmodeNr % 1000) / 100)
+    local TwoDigitFlightMode = math.floor((data.flightmodeNr % 100) / 10)
+    local OneDigitFlightMode = math.floor(data.flightmodeNr % 10)
+    local FlightModeName = {}
 
-  -- APM Flight Modes
-  FlightModeName[0]="Stabilize"
-  FlightModeName[1]="Acro"
-  FlightModeName[2]="Alt Hold"
-  FlightModeName[3]="Auto"
-  FlightModeName[4]="Guided"
-  FlightModeName[5]="Loiter"
-  FlightModeName[6]="RTL"
-  FlightModeName[7]="Circle"
-  FlightModeName[8]="Invalid Mode"
-  FlightModeName[9]="Landing"
-  FlightModeName[10]="Optic Loiter"
-  FlightModeName[11]="Drift"
-  FlightModeName[12]="Invalid Mode"
-  FlightModeName[13]="Sport"
-  FlightModeName[14]="Flip"
-  FlightModeName[15]="Auto Tune"
-  FlightModeName[16]="Pos Hold"
-  FlightModeName[17]="Brake"
+    FlightModeName[0]="Angle" --
+    FlightModeName[1]="Horizon" -- 
+    FlightModeName[2]="Pos Hold" --
+    FlightModeName[3]="RTH" --
+    FlightModeName[4]="WayPoint" --
+    FlightModeName[5]="---" --
+    FlightModeName[6]="No Telemetry" --
+    FlightModeName[7]="Arming Blocked" --
+    FlightModeName[8]="Acro" --
+    FlightModeName[9]="Passthrough" --
 
-  -- PX4 Flight Modes
-  FlightModeName[18]="Manual"
-  FlightModeName[19]="Acro"
-  FlightModeName[20]="Stabilized"
-  FlightModeName[21]="RAttitude"
-  FlightModeName[22]="Position"
-  FlightModeName[23]="Altitude"
-  FlightModeName[24]="Offboard"
-  FlightModeName[25]="Takeoff"
-  FlightModeName[26]="Pause"
-  FlightModeName[27]="Mission"
-  FlightModeName[28]="RTL"
-  FlightModeName[29]="Landing"
-  FlightModeName[30]="Follow"
+    local convertedFlightMode = 5
 
-  FlightModeName[31]="No Telemetry"
+    if data.flightmodeId == -1 or (rxpercent == 0 and data.flightmodeNr == 0) then
+       -- No telemetry
+      convertedFlightMode = 6
+    elseif OneDigitFlightMode == 2 then
+      -- Arming disabled
+      convertedFlightMode = 7
+    elseif FourDigitFlightMode == 1 or FourDigitFlightMode == 5 then
+      -- RTH
+      convertedFlightMode = 3
+    elseif FourDigitFlightMode == 2 or FourDigitFlightMode == 6 then
+      -- WAYPOINT
+      convertedFlightMode = 4
+    elseif ThreeDigitFlightMode >= 4 then
+      -- POS_HOLD
+      convertedFlightMode = 2
+    elseif TwoDigitFlightMode == 1 then
+      -- ANGLE
+      convertedFlightMode = 0
+    elseif TwoDigitFlightMode == 2 then 
+      -- HORIZON
+      convertedFlightMode = 1
+    elseif TwoDigitFlightMode == 4 then 
+      -- PASSTHROUGH
+      convertedFlightMode = 9
+    end
 
-  if data.flightmodeNr < 0 or data.flightmodeNr > 31 then
-      data.flightmodeNr=12    
-  
-    elseif data.flightmodeId ==-1 or ( rxpercent==0 and data.flightmodeNr==0 )then
-      data.flightmodeNr=31
-  end
+    drawText(68, 1, FlightModeName[convertedFlightMode], MIDSIZE)
     
-    
-    drawText(68, 1, FlightModeName[data.flightmodeNr], MIDSIZE)
-    
-    if data.flightmodeNr~=lastflightModeNumber and SayFlightMode == 1 then
-      playFile("/SCRIPTS/WAV/AVFM"..data.flightmodeNr.."A.wav")
-    lastflightModeNumber=data.flightmodeNr
-  end
+  --   if data.flightmodeNr~=lastflightModeNumber and SayFlightMode == 1 then
+  --     playFile("/SCRIPTS/WAV/AVFM"..data.flightmodeNr.."A.wav")
+  --   lastflightModeNumber=data.flightmodeNr
+  -- end
   
 
 -- ###############################################################
