@@ -791,30 +791,30 @@ end
     local convertedFlightMode = 5
 
     if data.flightmodeId == -1 or (rxpercent == 0 and data.flightmodeNr == 0) then
-       -- No telemetry
-      convertedFlightMode = 6
-    elseif OneDigitFlightMode == 2 then
-      -- Arming disabled
-      convertedFlightMode = 7
-    elseif FourDigitFlightMode == 1 or FourDigitFlightMode == 5 then
-      -- RTH
-      convertedFlightMode = 3
-    elseif FourDigitFlightMode == 2 or FourDigitFlightMode == 6 then
-      -- WAYPOINT
-      convertedFlightMode = 4
-    elseif ThreeDigitFlightMode >= 4 then
-      -- POS_HOLD
-      convertedFlightMode = 2
-    elseif TwoDigitFlightMode == 1 then
-      -- ANGLE
-      convertedFlightMode = 0
-    elseif TwoDigitFlightMode == 2 then 
-      -- HORIZON
-      convertedFlightMode = 1
-    elseif TwoDigitFlightMode == 4 then 
-      -- PASSTHROUGH
-      convertedFlightMode = 9
-    end
+      -- No telemetry
+     convertedFlightMode = 6
+   elseif bit32.band(OneDigitFlightMode, 2) > 0 then
+     -- Arming disabled
+     convertedFlightMode = 7
+   elseif bit32.band(FourDigitFlightMode, 1) > 0 then
+     -- RTH
+     convertedFlightMode = 3
+   elseif bit32.band(FourDigitFlightMode, 2) > 0 then
+     -- WAYPOINT
+     convertedFlightMode = 4
+   elseif bit32.band(ThreeDigitFlightMode, 4) > 0 then
+     -- POS_HOLD
+     convertedFlightMode = 2
+   elseif bit32.band(TwoDigitFlightMode, 1) > 0 then
+     -- ANGLE
+     convertedFlightMode = 0
+   elseif bit32.band(TwoDigitFlightMode, 2) > 0 then 
+     -- HORIZON
+     convertedFlightMode = 1
+   elseif bit32.band(TwoDigitFlightMode, 4) > 0 then 
+     -- PASSTHROUGH
+     convertedFlightMode = 9
+   end
 
     drawText(68, 1, FlightModeName[convertedFlightMode], MIDSIZE)
     
